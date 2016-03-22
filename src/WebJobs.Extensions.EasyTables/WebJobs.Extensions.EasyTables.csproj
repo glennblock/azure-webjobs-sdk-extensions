@@ -42,11 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Azure.WebJobs, Version=1.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Azure.WebJobs.Core.1.1.2-alpha-10267\lib\net45\Microsoft.Azure.WebJobs.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Azure.WebJobs.Core.1.1.2-alpha-10271\lib\net45\Microsoft.Azure.WebJobs.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Azure.WebJobs.Host, Version=1.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Azure.WebJobs.1.1.2-alpha-10267\lib\net45\Microsoft.Azure.WebJobs.Host.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Azure.WebJobs.1.1.2-alpha-10271\lib\net45\Microsoft.Azure.WebJobs.Host.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -109,6 +109,9 @@
       <Link>CustomDictionary.xml</Link>
       <SubType>Designer</SubType>
     </CodeAnalysisDictionary>
+    <Compile Include="..\Common\TypeUtility.cs">
+      <Link>Common\TypeUtility.cs</Link>
+    </Compile>
     <Compile Include="Bindings\CompositeBindingProvider.cs" />
     <Compile Include="Bindings\EasyTableAsyncCollector.cs" />
     <Compile Include="Config\DefaultMobileServiceClientFactory.cs" />
@@ -127,6 +130,8 @@
     <Compile Include="Bindings\EasyTableTableBinding.cs" />
     <Compile Include="Bindings\EasyTableTableValueProvider.cs" />
     <Compile Include="EasyTableUtility.cs" />
+    <Compile Include="Extensions\IMobileServiceClientExtensions.cs" />
+    <Compile Include="Extensions\ParameterInfoExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

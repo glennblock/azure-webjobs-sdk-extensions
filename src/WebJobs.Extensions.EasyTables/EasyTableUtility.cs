@@ -16,24 +16,30 @@ namespace Microsoft.Azure.WebJobs.Extensions.EasyTables
         /// usable with Easy Tables.
         /// </summary>
         /// <param name="type">The type to evaluate.</param>
+        /// <param name="context">The <see cref="EasyTableContext"/>.</param>
         /// <returns></returns>
-        public static bool IsCoreTypeValidItemType(Type type)
+        public static bool IsCoreTypeValidItemType(Type type, EasyTableContext context)
         {
-            Type coreType = GetCoreType(type);
-            return IsValidItemType(coreType);
+            Type coreType = TypeUtility.GetCoreType(type);
+            return IsValidItemType(coreType, context);
         }
 
         /// <summary>
-        /// Evaluates whether the specified type is valid for use with EasyTables. The type
-        /// must contain a single public string 'Id' property or be of type JObject.
+        /// Evaluates whether the specified type is valid for use with EasyTables.
+        /// If the type is <see cref="JObject"/>, then the ResolvedTableName property on 
+        /// <see cref="EasyTableAttribute"/> is required.
+        /// If the type is not <see cref="JObject"/>, then it must contain a single public
+        /// string 'Id' property.
         /// </summary>
         /// <param name="itemType">The type to evaluate.</param>
+        /// <param name="context">The <see cref="EasyTableContext"/>.</param>
         /// <returns></returns>
-        public static bool IsValidItemType(Type itemType)
+        public static bool IsValidItemType(Type itemType, EasyTableContext context)
         {
+            // We cannot support a type of JObject without a TableName.
             if (itemType == typeof(JObject))
             {
-                return true;
+                return !string.IsNullOrEmpty(context.ResolvedTableName);
             }
 
             // POCO types must have a string id property (case insensitive).
@@ -45,68 +51,6 @@ namespace Microsoft.Azure.WebJobs.Extensions.EasyTables
                 return false;
             }
 
-            return true;
-        }
-
-        /// <summary>
-        /// Returns the core EasyTable type for the supplied parameter.
-        /// </summary>
-        /// <remarks>
-        /// For example, the core Type is T in the following parameters:
-        /// <list type="bullet">
-        /// <item><description><see cref="ICollector{T}"/></description></item>
-        /// <item><description>T[]</description></item>
-        /// <item><description>out T</description></item>
-        /// <item><description>out T[]</description></item>
-        /// </list>
-        /// </remarks>
-        /// <param name="type">The Type to evaluate.</param>
-        /// <returns>The core Type</returns>
-        public static Type GetCoreType(Type type)
-        {
-            Type coreType = type;
-            if (coreType.IsByRef)
-            {
-                coreType = coreType.GetElementType();
-            }
-
-            if (coreType.IsArray)
-            {
-                return coreType.GetElementType();
-            }
-
-            if (coreType.IsGenericType)
-            {
-                Type genericArgType = null;
-                if (TryGetSingleGenericArgument(coreType, out genericArgType))
-                {
-                    return genericArgType;
-                }
-
-                throw new InvalidOperationException("Easy Table parameter types can only have one generic argument.");
-            }
-
-            return coreType;
-        }
-
-        /// <summary>
-        /// Checks whether the specified type has a single generic argument. If so,
-        /// that argument is returned via the out parameter.
-        /// </summary>
-        /// <param name="genericType">The generic type.</param>
-        /// <param name="genericArgumentType">The single generic argument.</param>
-        /// <returns>true if there was a single generic argument. Otherwise, false.</returns>
-        public static bool TryGetSingleGenericArgument(Type genericType, out Type genericArgumentType)
-        {
-            genericArgumentType = null;
-            Type[] genericArgTypes = genericType.GetGenericArguments();
-
-            if (genericArgTypes.Length != 1)
-            {
-                return false;
-            }
-
-            genericArgumentType = genericArgTypes[0];
             return true;
         }
     }

@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Extensions.EasyTables;
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
@@ -13,53 +12,25 @@ namespace Microsoft.Azure.WebJobs.Extensions.Tests.EasyTables
     public class EasyTableUtilityTests
     {
         [Theory]
-        [InlineData(typeof(JObject), true, typeof(JObject))]
-        [InlineData(typeof(TodoItem), true, typeof(TodoItem))]
-        [InlineData(typeof(JObject[]), true, typeof(JObject))]
-        [InlineData(typeof(TodoItem[]), true, typeof(TodoItem))]
-        [InlineData(typeof(IAsyncCollector<JObject>), false, typeof(JObject))]
-        [InlineData(typeof(IAsyncCollector<TodoItem>), false, typeof(TodoItem))]
-        [InlineData(typeof(ICollector<JObject>), false, typeof(JObject))]
-        [InlineData(typeof(ICollector<TodoItem>), false, typeof(TodoItem))]
-        [InlineData(typeof(JObject), false, typeof(JObject))]
-        [InlineData(typeof(TodoItem), false, typeof(TodoItem))]
-        [InlineData(typeof(IMobileServiceTable), false, typeof(IMobileServiceTable))]
-        [InlineData(typeof(IMobileServiceTable<TodoItem>), false, typeof(TodoItem))]
-        [InlineData(typeof(IMobileServiceTableQuery<TodoItem>), false, typeof(TodoItem))]
-        [InlineData(typeof(IEnumerable<IEnumerable<TodoItem>>), false, typeof(IEnumerable<TodoItem>))]
-        [InlineData(typeof(TodoItem[][]), false, typeof(TodoItem[]))]
-        [InlineData(typeof(IAsyncCollector<TodoItem>), true, typeof(TodoItem))]
-        public void GetCoreType_Returns_CorrectType(Type parameterType, bool isOutParameter, Type expectedType)
+        [InlineData(typeof(TodoItem), null, true)]
+        [InlineData(typeof(JObject), "Item", true)]
+        [InlineData(typeof(IMobileServiceTable), null, false)]
+        [InlineData(typeof(IAsyncCollector<TodoItem>), null, false)]
+        [InlineData(typeof(string), null, false)]
+        [InlineData(typeof(NoId), null, false)]
+        [InlineData(typeof(TwoId), null, false)]
+        [InlineData(typeof(PrivateId), null, false)]
+        [InlineData(typeof(JObject), null, false)]
+        [InlineData(typeof(TodoItem), "Item", true)]
+        [InlineData(typeof(object), "Item", false)]
+        [InlineData(typeof(object), null, false)]
+        public void IsValidEasyTableType_CorrectlyEvaluates(Type typeToEvaluate, string tableName, bool expected)
         {
             // Arrange
-            Type typeToTest = isOutParameter ? parameterType.MakeByRefType() : parameterType;
+            var context = new EasyTableContext { ResolvedTableName = tableName };
 
             // Act
-            Type coreType = EasyTableUtility.GetCoreType(typeToTest);
-
-            // Assert
-            Assert.Equal(coreType, expectedType);
-        }
-
-        [Fact]
-        public void GetCoreType_ThrowsException_IfMultipleGenericArguments()
-        {
-            Assert.Throws<InvalidOperationException>(() => EasyTableUtility.GetCoreType(typeof(IDictionary<string, string>)));
-        }
-
-        [Theory]
-        [InlineData(typeof(TodoItem), true)]
-        [InlineData(typeof(JObject), true)]
-        [InlineData(typeof(IMobileServiceTable), false)]
-        [InlineData(typeof(IAsyncCollector<TodoItem>), false)]
-        [InlineData(typeof(string), false)]
-        [InlineData(typeof(NoId), false)]
-        [InlineData(typeof(TwoId), false)]
-        [InlineData(typeof(PrivateId), false)]
-        public void IsValidEasyTableType_CorrectlyEvaluates(Type typeToEvaluate, bool expected)
-        {
-            // Act
-            bool result = EasyTableUtility.IsValidItemType(typeToEvaluate);
+            bool result = EasyTableUtility.IsValidItemType(typeToEvaluate, context);
 
             // Assert
             Assert.Equal(expected, result);
