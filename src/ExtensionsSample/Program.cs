@@ -15,6 +15,8 @@ using Microsoft.Azure.WebJobs.Extensions.Files;
 using Microsoft.Azure.WebJobs.Extensions.SendGrid;
 using Microsoft.Azure.WebJobs.Extensions.WebHooks;
 using Microsoft.Azure.WebJobs.Host;
+using WebJobs.Extensions.Splunk;
+using WebJobs.Extensions.Splunk.Config;
 using WebJobsSandbox;
 
 namespace ExtensionsSample
@@ -34,18 +36,29 @@ namespace ExtensionsSample
                 filesConfig.RootPath = @"c:\temp\files";
             }
 
-            config.UseFiles(filesConfig);
+            //config.UseFiles(filesConfig);
             config.UseTimers();
-            config.UseSample();
-            config.UseEasyTables();
+            //config.UseSample();
+            //config.UseEasyTables();
             config.UseCore();
-            config.UseDocumentDB();
-            config.UseNotificationHubs();
+            //config.UseDocumentDB();
+            //config.UseNotificationHubs();
+
+            var splunkConfig = new SplunkConfiguration
+            {
+                HecHost = new Uri("http://localhost:8088"),
+                Token = new Guid("3E712E99-63C5-4C5A-841D-592DD070DA51")
+            };
+
+            config.UseSplunk(splunkConfig);
+
+            /*
             var sendGridConfiguration = new SendGridConfiguration()
             {
                 ToAddress = "admin@webjobssamples.com",
                 FromAddress = new MailAddress("samples@webjobssamples.com", "WebJobs Extensions Samples")
             };
+
             config.UseSendGrid(sendGridConfiguration);
 
             bool apiHubEnabled = CheckForApiHub(config);
@@ -57,33 +70,27 @@ namespace ExtensionsSample
             WebHooksConfiguration webHooksConfig = new WebHooksConfiguration();
             webHooksConfig.UseReceiver<GitHubWebHookReceiver>();
             config.UseWebHooks(webHooksConfig);
-
-            JobHost host = new JobHost(config);
+            */
 
             // Add or remove types from this list to choose which functions will 
             // be indexed by the JobHost.
-            config.TypeLocator = new SamplesTypeLocator(
-                typeof(ErrorMonitoringSamples),
-                typeof(FileSamples),
-                typeof(MiscellaneousSamples),
-                typeof(SampleSamples),
-                typeof(SendGridSamples),
-                typeof(TableSamples),
-                typeof(TimerSamples),
-                typeof(WebHookSamples),
-                typeof(ApiHubSamples));
-            
+            config.TypeLocator = new SamplesTypeLocator(typeof(SplunkSamples));
+            config.HostId = "gbtest";
+            JobHost host = new JobHost(config);
+ 
+            /*
             host.Call(typeof(MiscellaneousSamples).GetMethod("ExecutionContext"));
             host.Call(typeof(FileSamples).GetMethod("ReadWrite"));
             host.Call(typeof(SampleSamples).GetMethod("Sample_BindToStream"));
             host.Call(typeof(SampleSamples).GetMethod("Sample_BindToString"));
             host.Call(typeof(TableSamples).GetMethod("CustomBinding"));
 
+           
             if (apiHubEnabled)
             {
                 host.Call(typeof(ApiHubSamples).GetMethod("Writer"));
-            }
-
+            }*
+            */
             host.RunAndBlock();
         }
 

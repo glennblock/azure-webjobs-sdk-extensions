@@ -181,6 +181,7 @@
     <Compile Include="Samples\NotificationHubSamples.cs" />
     <Compile Include="Samples\SampleSamples.cs" />
     <Compile Include="Samples\SendGridSamples.cs" />
+    <Compile Include="Samples\SplunkSamples.cs" />
     <Compile Include="Samples\TableSamples.cs" />
     <Compile Include="Samples\TimerSamples.cs" />
     <Compile Include="Samples\WebHookSamples.cs" />
@@ -198,6 +199,10 @@
     </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\azure-webjobs-sdk-extensions-splunk\src\WebJobs.Extensions.Splunk\WebJobs.Extensions.Splunk.csproj">
+      <Project>{31c38ff6-b849-4031-bbf5-99eb589b7717}</Project>
+      <Name>WebJobs.Extensions.Splunk</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebJobs.Extensions.ApiHub\WebJobs.Extensions.ApiHub.csproj">
       <Project>{091041ae-378d-42b0-aa0a-6a1f47c0be2d}</Project>
       <Name>WebJobs.Extensions.ApiHub</Name>
