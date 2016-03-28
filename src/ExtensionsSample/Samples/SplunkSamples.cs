@@ -14,7 +14,6 @@ namespace ExtensionsSample.Samples
 {
     public static class SplunkSamples
     {
-        /*
         public static void SendStringEventExplicit(
             [TimerTrigger("0:01")] TimerInfo timer,
             [Splunk] out SplunkEvent splunkEvent)
@@ -36,7 +35,6 @@ namespace ExtensionsSample.Samples
                 Event = new { Message = "Hello from a Webjob (Explict)" }
             };
         }
-        */
 
         public static void SendStringEventImplicit(
             [TimerTrigger("0:01")] TimerInfo timer,
