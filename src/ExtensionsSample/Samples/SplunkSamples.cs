@@ -16,7 +16,7 @@ namespace ExtensionsSample.Samples
     {
         public static void SendStringEventExplicit(
             [TimerTrigger("0:01")] TimerInfo timer,
-            [Splunk] out SplunkEvent splunkEvent)
+            [SplunkHttpEventCollector] out SplunkEvent splunkEvent)
         {
             splunkEvent = new SplunkEvent()
             {
@@ -27,7 +27,7 @@ namespace ExtensionsSample.Samples
 
         public static void SendObjectEventExplicit(
             [TimerTrigger("0:01")] TimerInfo timer,
-            [Splunk] out SplunkEvent splunkEvent)
+            [SplunkHttpEventCollector] out SplunkEvent splunkEvent)
         {
             splunkEvent = new SplunkEvent()
             {
@@ -38,14 +38,14 @@ namespace ExtensionsSample.Samples
 
         public static void SendStringEventImplicit(
             [TimerTrigger("0:01")] TimerInfo timer,
-            [Splunk] out string splunkEvent)
+            [SplunkHttpEventCollector] out string splunkEvent)
         {
             splunkEvent = "Hello from a Webjob (Implicit)";
         }
 
         public static void SendStringObjectImplicit(
             [TimerTrigger("0:01")] TimerInfo timer,
-            [Splunk] out object splunkEvent)
+            [SplunkHttpEventCollector] out object splunkEvent)
         {
             splunkEvent = new { Message = "Hello from a Webjob (Implicit)" };
         }
